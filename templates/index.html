@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Note Taking App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 700px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .save-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .edit-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .note {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .timestamp {
+            color: gray;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .actions {
+            margin-top: 10px;
+        }
+
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .edit-form textarea {
+            height: 80px;
+        }
+    </style>
+
+    <script>
+        function showEditForm(noteId) {
+            const form = document.getElementById("edit-form-" + noteId);
+
+            if (form.style.display === "none" || form.style.display === "") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+    </script>
+</head>
+
+<body>
+
+    <h1>📝 Note Taking App</h1>
+
+    <!-- Add Note -->
+    <form method="POST" action="/add">
+        <textarea
+            name="note"
+            placeholder="Write your note here..."
+            required
+        ></textarea>
+
+        <button type="submit" class="save-btn">
+            Save Note
+        </button>
+    </form>
+
+    <h2>Notes</h2>
+
+    {% for note in notes %}
+
+        <div class="note">
+
+            <div class="timestamp">
+                🕒 {{ note[2] }}
+            </div>
+
+            <p>
+                📌 {{ note[1] }}
+            </p>
+
+            <div class="actions">
+
+                <!-- Edit Button -->
+                <button
+                    type="button"
+                    class="edit-btn"
+                    onclick="showEditForm({{ note[0] }})"
+                >
+                    ✏️ Edit
+                </button>
+
+                <!-- Delete Button -->
+                <form
+                    method="POST"
+                    action="/delete/{{ note[0] }}"
+                    style="display: inline; padding: 0; margin: 0;"
+                >
+                    <button type="submit" class="delete-btn">
+                        🗑️ Delete
+                    </button>
+                </form>
+
+            </div>
+
+            <!-- Edit Form -->
+            <form
+                method="POST"
+                action="/edit/{{ note[0] }}"
+                id="edit-form-{{ note[0] }}"
+                class="edit-form"
+            >
+
+                <textarea name="note" required>{{ note[1] }}</textarea>
+
+                <button type="submit" class="save-btn">
+                    💾 Save Changes
+                </button>
+
+            </form>
+
+        </div>
+
+    {% endfor %}
+
+</body>
+</html>
